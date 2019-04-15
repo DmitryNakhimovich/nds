@@ -12,69 +12,66 @@ using ZedGraph;
 
 namespace NDS
 {
+    // todo добавить IMethodState
     public struct MethodState
-    {       
-        // Вспомагательные для метода
+    {
         public List<double> YY;
         public List<double> Y1;
         public List<double> Y2;
         public List<double> Y3;
         public List<double> Y4;
+        public List<double> FY;
     }
+
     public abstract class IMethod
-    {
-        protected MethodState methodState;
-
-        /// Выделение памяти под рабочие массивы
-        /// <param name="n">Размерность массивов</param>
-        protected void Init(int n)
-        {
-            if (N < 1)
-                throw new Exception("array length < 1");
-
-            Y = new double[N];
-            YY = new double[N];
-            Y1 = new double[N];
-            Y2 = new double[N];
-            Y3 = new double[N];
-            Y4 = new double[N];
-            FY = new double[N];
-        }
-        /// Расчет правых частей системы
-        /// <param name="t">текущее время</param>
-        /// <param name="Y">вектор решения</param>
-        /// <returns>правая часть</returns>
-        abstract protected double[] Calculate(double t, double[] Y);
-
-        /// Следующий шаг метода Рунге-Кутта
-        /// <param name="dt">текущий шаг по времени</param>
-        abstract public void NextStep(double dt);
-    }
-    public abstract class MethodRK4 : IMethod
     {
         /// <summary>
         /// Текущее время
         /// </summary>
         public double t = 0;
+        /// Искомое решение, 
+        /// Y[0] - само решение, Y[i] - i-тая производная решения
+        public List<double> result;
+        /// <summary>
+        /// вспомагательный параметры для метода
+        /// </summary>
+        protected MethodState methodState;
 
-        /// Искомое решение, Y[0] - само решение, Y[i] - i-тая производная решения
-        public List<double> Y;
-               
-        /// Внутренние переменные 
-        private double[] YY, Y1, Y2, Y3, Y4;
-        protected double[] FY;
-
-        // "N" размерность системы
-        public MethodRK4(int N)
-        {
-            Init(N);
-        }
-        public MethodRK4() { }
-      
+        /// Выделение памяти под рабочие массивы
+        /// <param name="n">Размерность массивов</param>
+        abstract protected void Init(int n);
         /// Установка начальных условий
         /// <param name="t0">Начальное время</param>
         /// <param name="Y0">Начальное условие</param>
-        public void SetInit(double t0, double[] Y0)
+        abstract public void SetInit(double t0, List<double> Y0);
+
+        /// Расчет правых частей системы
+        /// <param name="t">текущее время</param>
+        /// <param name="Y">вектор решения</param>
+        /// <returns>правая часть</returns>
+        abstract protected double[] Calculate(double t, List<double> Y);
+        /// Вычислить следующий шаг
+        /// <param name="dt">текущий шаг по времени</param>
+        abstract public void NextStep(double dt);
+    }
+    public abstract class MethodRK4 : IMethod
+    {
+        
+
+        protected override void Init(int n)
+        {
+            if (n < 1)
+                throw new Exception("array length < 1");
+
+            Y = new List<double>(n);
+            methodState.YY = new List<double>(n);
+            methodState.Y1 = new List<double>(n);
+            methodState.Y2 = new List<double>(n);
+            methodState.Y3 = new List<double>(n);
+            methodState.Y4 = new List<double>(n);
+            methodState.FY = new List<double>(n);
+        }
+        public override void SetInit(double t0, List<double> Y0)
         {
             t = t0;
             if (Y == null)
@@ -83,6 +80,13 @@ namespace NDS
             for (int i = 0; i < Y.Length; i++)
                 Y[i] = Y0[i];
         }
+
+        // "N" размерность системы
+        public MethodRK4(int N)
+        {
+            Init(N);
+        }
+        public MethodRK4() { }
 
         public override void NextStep(double dt)
         {
@@ -115,5 +119,5 @@ namespace NDS
             t += dt;
         }
     }
-        
+
 }
