@@ -16,18 +16,20 @@ namespace NDS
     {
         double dt { get; set; }
         double eps { get; set; }
+        void init(double _dt, double _eps, int n);
+        void clear(int n);
     }
     public struct MethodStateRK4 : IMethodState
     {
         public double dt { get; set; }
         public double eps { get; set; }
 
-        public List<double> YY;
-        public List<double> Y1;
-        public List<double> Y2;
-        public List<double> Y3;
-        public List<double> Y4;
-        public List<double> FY;
+        public List<double> YY { get; set; }
+        public List<double> Y1 { get; set; }
+        public List<double> Y2 { get; set; }
+        public List<double> Y3 { get; set; }
+        public List<double> Y4 { get; set; }
+        public List<double> FY { get; set; }
 
         public MethodStateRK4(int n)
         {
@@ -35,7 +37,7 @@ namespace NDS
                 throw new Exception("array length < 0");
 
             dt = 0;
-            eps = 0;            
+            eps = 0;
             YY = new List<double>(n);
             Y1 = new List<double>(n);
             Y2 = new List<double>(n);
@@ -50,6 +52,18 @@ namespace NDS
 
             dt = _dt;
             eps = _eps;
+            YY = new List<double>(n);
+            Y1 = new List<double>(n);
+            Y2 = new List<double>(n);
+            Y3 = new List<double>(n);
+            Y4 = new List<double>(n);
+            FY = new List<double>(n);
+        }
+        public void clear(int n)
+        {
+            if (n < 0)
+                throw new Exception("array length < 0");
+
             YY = new List<double>(n);
             Y1 = new List<double>(n);
             Y2 = new List<double>(n);
@@ -116,7 +130,7 @@ namespace NDS
         /// <summary>
         /// модель уравнений системы
         /// </summary>
-        IMethodFunction function;
+        protected IMethodFunction function;
 
         /// Выделение памяти под рабочие массивы
         /// <param name="func">Рассчетная модель системы</param>
@@ -125,22 +139,15 @@ namespace NDS
         {
             function = func;
         }
-        
+
         /// Вычислить следующий шаг
         /// <param name="dt">текущий шаг по времени</param>
         abstract public void getNextStep();
-
-        /// <summary>
-        /// Рассчитать модель системы
-        /// </summary>
-        /// <returns>лист значений системы</returns>
-        protected List<double> getFunction()
-        {
-            return function.calculate(t, result);
-        }
     }
     public class MethodRK4 : IMethod
     {
+        new public MethodStateRK4 state;
+
         public MethodRK4(IMethodFunction func, int n) : base(func, n)
         {
             if (n < 1)
@@ -151,23 +158,19 @@ namespace NDS
             t = 0;
         }
 
-        public override void setInit(double t0, List<double> Y0)
-        {            
-            if (result.Count < 1)
-            {
-                state = new MethodStateRK4(Y0.Count);
-            }
-            result = Y0;
-            t = t0;
+        public void setState(double _t, List<double> _res)
+        {
+            t = _t;
+            result = _res;
+            state.clear(result.Count);
         }
 
         public override void getNextStep()
         {
-            int i;
-            if (dt < 0) return;
+            int i = 0;
+            if (state.dt < 0) return;
 
-            // рассчитать Y1
-            Y1 = Calculate(t, Y);
+            state.Y1 = function.calculate(t, result);
             for (i = 0; i < Y.Length; i++)
                 YY[i] = Y[i] + Y1[i] * (dt / 2.0);
 
