@@ -12,15 +12,91 @@ using ZedGraph;
 
 namespace NDS
 {
-    // todo добавить IMethodState
-    public struct MethodState
+    public interface IMethodState
     {
+        double dt { get; set; }
+        double eps { get; set; }
+    }
+    public struct MethodStateRK4 : IMethodState
+    {
+        public double dt { get; set; }
+        public double eps { get; set; }
+
         public List<double> YY;
         public List<double> Y1;
         public List<double> Y2;
         public List<double> Y3;
         public List<double> Y4;
         public List<double> FY;
+
+        public MethodStateRK4(int n)
+        {
+            if (n < 0)
+                throw new Exception("array length < 0");
+
+            dt = 0;
+            eps = 0;            
+            YY = new List<double>(n);
+            Y1 = new List<double>(n);
+            Y2 = new List<double>(n);
+            Y3 = new List<double>(n);
+            Y4 = new List<double>(n);
+            FY = new List<double>(n);
+        }
+        public void init(double _dt, double _eps, int n)
+        {
+            if (n < 0)
+                throw new Exception("array length < 0");
+
+            dt = _dt;
+            eps = _eps;
+            YY = new List<double>(n);
+            Y1 = new List<double>(n);
+            Y2 = new List<double>(n);
+            Y3 = new List<double>(n);
+            Y4 = new List<double>(n);
+            FY = new List<double>(n);
+        }
+    }
+
+    public abstract class IMethodFunction
+    {
+        public SystemParams sysParam;
+
+        public IMethodFunction(SystemParams p)
+        {
+            sysParam = p;
+        }
+
+        public abstract List<double> calculate(double t, List<double> Y);
+    }
+    public class DE1_Function : IMethodFunction
+    {
+        public DE1_Function(SystemParams p) : base(p)
+        {
+        }
+
+        public override List<double> calculate(double t, List<double> Y)
+        {
+            List<double> funcValue = new List<double>();
+            funcValue.Add(Y[1]);
+            funcValue.Add(-2 * sysParam.h * Y[1] - sysParam.p);
+            return funcValue;
+        }
+    }
+    public class DE2_Function : IMethodFunction
+    {
+        public DE2_Function(SystemParams p) : base(p)
+        {
+        }
+
+        public override List<double> calculate(double t, List<double> Y)
+        {
+            List<double> funcValue = new List<double>();
+            funcValue.Add(Y[1]);
+            funcValue.Add(-2 * sysParam.h1 * Y[1] - sysParam.lambda * sysParam.lambda * Y[0] - sysParam.p);
+            return funcValue;
+        }
     }
 
     public abstract class IMethod
@@ -29,66 +105,63 @@ namespace NDS
         /// Текущее время
         /// </summary>
         public double t = 0;
-        /// Искомое решение, 
+        /// <summary>         
         /// Y[0] - само решение, Y[i] - i-тая производная решения
+        /// </summary>
         public List<double> result;
         /// <summary>
-        /// вспомагательный параметры для метода
+        /// параметры для метода
         /// </summary>
-        protected MethodState methodState;
+        public IMethodState state;
+        /// <summary>
+        /// модель уравнений системы
+        /// </summary>
+        IMethodFunction function;
 
         /// Выделение памяти под рабочие массивы
+        /// <param name="func">Рассчетная модель системы</param>
         /// <param name="n">Размерность массивов</param>
-        abstract protected void Init(int n);
-        /// Установка начальных условий
-        /// <param name="t0">Начальное время</param>
-        /// <param name="Y0">Начальное условие</param>
-        abstract public void SetInit(double t0, List<double> Y0);
-
-        /// Расчет правых частей системы
-        /// <param name="t">текущее время</param>
-        /// <param name="Y">вектор решения</param>
-        /// <returns>правая часть</returns>
-        abstract protected double[] Calculate(double t, List<double> Y);
+        public IMethod(IMethodFunction func, int n)
+        {
+            function = func;
+        }
+        
         /// Вычислить следующий шаг
         /// <param name="dt">текущий шаг по времени</param>
-        abstract public void NextStep(double dt);
-    }
-    public abstract class MethodRK4 : IMethod
-    {
-        
+        abstract public void getNextStep();
 
-        protected override void Init(int n)
+        /// <summary>
+        /// Рассчитать модель системы
+        /// </summary>
+        /// <returns>лист значений системы</returns>
+        protected List<double> getFunction()
+        {
+            return function.calculate(t, result);
+        }
+    }
+    public class MethodRK4 : IMethod
+    {
+        public MethodRK4(IMethodFunction func, int n) : base(func, n)
         {
             if (n < 1)
                 throw new Exception("array length < 1");
 
-            Y = new List<double>(n);
-            methodState.YY = new List<double>(n);
-            methodState.Y1 = new List<double>(n);
-            methodState.Y2 = new List<double>(n);
-            methodState.Y3 = new List<double>(n);
-            methodState.Y4 = new List<double>(n);
-            methodState.FY = new List<double>(n);
+            state = new MethodStateRK4(n);
+            result = new List<double>(n);
+            t = 0;
         }
-        public override void SetInit(double t0, List<double> Y0)
-        {
+
+        public override void setInit(double t0, List<double> Y0)
+        {            
+            if (result.Count < 1)
+            {
+                state = new MethodStateRK4(Y0.Count);
+            }
+            result = Y0;
             t = t0;
-            if (Y == null)
-                Init(Y0.Length);
-
-            for (int i = 0; i < Y.Length; i++)
-                Y[i] = Y0[i];
         }
 
-        // "N" размерность системы
-        public MethodRK4(int N)
-        {
-            Init(N);
-        }
-        public MethodRK4() { }
-
-        public override void NextStep(double dt)
+        public override void getNextStep()
         {
             int i;
             if (dt < 0) return;

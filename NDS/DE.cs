@@ -35,7 +35,7 @@ namespace NDS
         /// <param name="SysParam"> h, h1, lambda, p, mu0, mu, R, E, phi, gamma </param>
         public BaseDE(int n, SystemParams p)
         {
-            method.Init(n);
+            method.init(n);
             SetParam(p);
         }      
         public void SetParam(SystemParams p)
