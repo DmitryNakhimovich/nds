@@ -1,53 +1,103 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="NDS.Form1" Collapsed="true">
-    <Position X="0.75" Y="2.25" Width="1.5" />
+  <Class Name="NDS.IMethodFunction" Collapsed="true">
+    <Position X="1.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>/wSADQYZAC4AwBAwAQCBQApGA8A5ImwSUPYKgg0FDTQ=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.DE1_Function" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.DE2_Function" Collapsed="true">
+    <Position X="2.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.BaseDE" Collapsed="true">
+    <Position X="1.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMBAAAAAAAAACAABgAAAAAAAAAgAgAAAAAAAAAAABA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.DE1" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.DE2" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.SystemDE" Collapsed="true">
+    <Position X="1.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>DE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.Form1" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>/wWADQYZAC4AwBAwAQCBQApGA8w7MmwSUPYKgg0FDTQ=</HashCode>
       <FileName>Form1.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="NDS.IMethod" Collapsed="true">
+    <Position X="5.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABgAAAAAAAAAgAAAEAAQAAAAAAAA=</HashCode>
+      <FileName>Methods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NDS.MethodRK4" Collapsed="true">
+    <Position X="5.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAEAAAAAAAAAAQ=</HashCode>
+      <FileName>Methods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="NDS.Program" Collapsed="true">
-    <Position X="0.75" Y="1" Width="1.5" />
+    <Position X="9" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NDS.RungeKutta" Collapsed="true">
-    <Position X="3.25" Y="1" Width="1.5" />
+  <Struct Name="NDS.SystemParams" Collapsed="true">
+    <Position X="4" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAGAAAAAAAAAAACAAAAAAEBgAIAAIQCEAAAIAA=</HashCode>
-      <FileName>RungeKutta.cs</FileName>
+      <HashCode>AAEAAAAJAAAAAAAAAAAAAAAAAAAAAEAAQMAAAgAAAQA=</HashCode>
+      <FileName>DE.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="NDS.DE" Collapsed="true">
-    <Position X="3.25" Y="2.25" Width="1.5" />
+  </Struct>
+  <Struct Name="NDS.MethodStateRK4" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAJAAAAAAAAAAAAAAAAAAAIAEAAQMAAAgAAAQA=</HashCode>
-      <FileName>RungeKutta.cs</FileName>
+      <HashCode>AEAAAAAEAAAAAAAAAAACAAAAAAEBAAIAAIYAAAAAAAA=</HashCode>
+      <FileName>Methods.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="NDS.DE_1" Collapsed="true">
-    <Position X="4.75" Y="4" Width="1.5" />
+    <Lollipop Position="0.173" Collapsed="true" />
+  </Struct>
+  <Interface Name="NDS.IMethodState" Collapsed="true">
+    <Position X="5.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
-      <FileName>RungeKutta.cs</FileName>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAYAAAAAAAA=</HashCode>
+      <FileName>Methods.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="NDS.DE_2" Collapsed="true">
-    <Position X="2" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
-      <FileName>RungeKutta.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NDS.DE_sys" Collapsed="true">
-    <Position X="3.5" Y="5.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAIAgAACAAAIAAAAAAAAAIAQAAA=</HashCode>
-      <FileName>RungeKutta.cs</FileName>
-    </TypeIdentifier>
-  </Class>
+  </Interface>
   <Font Name="Segoe UI" Size="10" />
 </ClassDiagram>
