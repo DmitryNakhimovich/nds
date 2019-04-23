@@ -101,7 +101,22 @@ namespace NDS
             function = func;
         }
 
-        abstract public void setState(double _t, List<double> _res);
+        public void setState(double _t, List<double> _res)
+        {
+            t = _t;
+            result = _res;
+            state.clear(result.Count);
+        }
+        public void setState(double _t, List<double> _res, double _dt, double _eps)
+        {
+            t = _t;
+            result = _res;
+            state.init(_dt, _eps, result.Count);
+        }
+        public double getdt()
+        {
+            return state.dt;
+        }
 
         /// Вычислить следующий шаг
         /// <param name="dt">текущий шаг по времени</param>
@@ -119,13 +134,6 @@ namespace NDS
             state = new MethodStateRK4(n);
             result = new List<double>(n);
             t = 0;
-        }
-
-        public override void setState(double _t, List<double> _res)
-        {
-            t = _t;
-            result = _res;
-            state.clear(result.Count);
         }
 
         public override void getNextStep()

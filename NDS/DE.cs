@@ -90,15 +90,39 @@ namespace NDS
         /// <returns></returns>
         abstract public double getHit(double t, double U, double U1);
 
-        public void setState(double _t, List<double> _res)
+        public void setInit(double _t, List<double> _res, double _dt, double _eps)
         {
             time.Clear();
             result.Clear();
 
             time.Add(_t);
             result.Add(_res);
+            method.setState(_t, _res, _dt, _eps);
+        }
+        public void setState(int index, double _t, List<double> _res, double _dt, double _eps)
+        {
+            if (index < 0)
+                throw new Exception("index < 0");
+
+            time[index] = _t;
+            result[index] = _res;
+            method.setState(_t, _res, _dt, _eps);
+        }
+        public void setState(int index, double _t, List<double> _res)
+        {
+            if (index < 0)
+                throw new Exception("index < 0");
+
+            time[index] = _t;
+            result[index] = _res;
             method.setState(_t, _res);
         }
+        public void setParam(SystemParams _sysParam)
+        {
+            sysParam = _sysParam;
+            method.function.sysParam = _sysParam;
+        }
+
         public void getNextStep()
         {
             method.getNextStep();
@@ -163,31 +187,37 @@ namespace NDS
 
         public void setParam(SystemParams _sysParam)
         {
-            de1.sysParam = _sysParam;
-            de1.method.function.sysParam = _sysParam;
-            de2.sysParam = _sysParam;
-            de2.method.function.sysParam = _sysParam;
+            de1.setParam(_sysParam);
+            de2.setParam(_sysParam);
         }
 
-        public void solveDiffs(List<double> initStateDE1, List<double> initStateDE2, double dt, double T)
+        public void solveDiffs(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps)
         {
             int i = 0;
+            bool isActive = true;
 
-            de1.setState(0, initStateDE1);
-            de2.setState(0, initStateDE2);
+            de1.setInit(0, initStateDE1, dt, eps);
+            de2.setInit(0, initStateDE2, dt, eps);
 
-            while (de1.time.Last() <= T || de2.time.Last() <= T)
+            while (isActive)
             {
-                if (de1.time.Last() <= T)
+                if (de1.method.getdt() != de2.method.getdt())
                 {
-                    de1.getNextStep();
+
                 }
-                if (de2.time.Last() <= T)
-                {
-                    de2.getNextStep();
-                }
+
+                de1.getNextStep();             
+                de2.getNextStep();
                
-                if (de1.Y[0] - de2.Y[0] > de1.F(t) || de1.Y[0] - de2.Y[0] > de2.F(t))
+                List<double> de1Res = de1.result.Last();
+                List<double> de2Res = de2.result.Last();
+                double de1t = de1.time.Last();
+                double de2t = de2.time.Last();
+
+                if (
+                    (de1Work && de1Res[0] - de2Res[0] > de1.getF(de1t)) &&
+                    (de2Work && de1Res[0] - de2Res[0] > de2.getF(de2t))
+                   )
                 {
                     res[0, j] = de1.Y[0];
                     res[1, j] = de1.Y[1];
@@ -204,8 +234,7 @@ namespace NDS
                     de2.SetInit(de2.t, new double[] { res[0, j], res[1, j], res[2, j], res[3, j] });
                 }
 
-                t = de1.t;
-                j++;
+                i++;
             }
         }
     }
