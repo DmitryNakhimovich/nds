@@ -94,7 +94,7 @@ namespace NDS
         {
             time.Clear();
             result.Clear();
-                        
+
             time.Add(_t);
             result.Add(_res);
             method.setState(_t, _res);
@@ -171,14 +171,22 @@ namespace NDS
 
         public void solveDiffs(List<double> initStateDE1, List<double> initStateDE2, double dt, double T)
         {
-            de1.setState(0, initStateDE1);
-            de2.setState(0, initStateDE2);
             int i = 0;
 
-            while (t <= T)
+            de1.setState(0, initStateDE1);
+            de2.setState(0, initStateDE2);
+
+            while (de1.time.Last() <= T || de2.time.Last() <= T)
             {
-                de1.NextStep(dt);
-                de2.NextStep(dt);
+                if (de1.time.Last() <= T)
+                {
+                    de1.getNextStep();
+                }
+                if (de2.time.Last() <= T)
+                {
+                    de2.getNextStep();
+                }
+               
                 if (de1.Y[0] - de2.Y[0] > de1.F(t) || de1.Y[0] - de2.Y[0] > de2.F(t))
                 {
                     res[0, j] = de1.Y[0];
