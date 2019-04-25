@@ -30,10 +30,10 @@ namespace NDS
         double E = 0.018;
         double phi = 0.6;
         double gamma = 4;
-        double[] sysParam;
+        SystemParams sysParam = new SystemParams();
         // начальные условия
         double x_0;
-        double u_0; 
+        double u_0;
         double x1_0;
         double u1_0;
         // вычисленные точки
@@ -49,6 +49,7 @@ namespace NDS
         double curMouseX, curMouseY; // положение мыши
         double dt; // шаг интегрирования
         double T; // время интерирования 
+        double eps = 0.00001;
         // параметры анимации        
         int maxGraphDot = 0; // максимальное число точек T/dt
         int capGraphDot = 10000; // порог отображаемых точек на графике
@@ -60,14 +61,14 @@ namespace NDS
         public Form1()
         {
             InitializeComponent();
-            sysParam = new double[] { h, h1, lambda, p, mu0, mu, R, E, phi, gamma };
-            sysObj = new SystemDE(2, sysParam);
+            sysParam.init(h, h1, lambda, p, mu0, mu, R, E, phi, gamma);
+            sysObj = new SystemDE(sysParam, 2);
 
             paneT = zedGraphControl1.GraphPane;
             paneT.XAxis.Title.Text = "X";
             paneT.YAxis.Title.Text = "Y";
             paneT.Title.Text = "";
-            paneT.XAxis.Scale.Min = -Math.PI;            
+            paneT.XAxis.Scale.Min = -Math.PI;
             paneT.XAxis.Scale.Max = Math.PI;
 
             paneD = zedGraphControl2.GraphPane;
@@ -94,7 +95,7 @@ namespace NDS
                 phi = Convert.ToDouble(numericUpDown8.Text);
                 gamma = Convert.ToDouble(numericUpDown18.Text);
 
-                sysParam = new double[] { h, h1, lambda, p, mu0, mu, R, E, phi, gamma };
+                sysParam.init(h, h1, lambda, p, mu0, mu, R, E, phi, gamma);
 
                 //x_name = comboBox2.SelectedValue.ToString();
                 //y_name = comboBox1.SelectedValue.ToString();
@@ -134,7 +135,7 @@ namespace NDS
         private void button1_Click(object sender, EventArgs e)
         {
             get_sysParam();
-        }      
+        }
         private void button2_Click(object sender, EventArgs e)
         {
             get_sysIntegr();
@@ -146,8 +147,8 @@ namespace NDS
             if (curGraphDot > capGraphDot)
             {
                 startGraphDot += speedGraphDot;
-            }                            
-            if(curGraphDot + speedGraphDot >= maxGraphDot)
+            }
+            if (curGraphDot + speedGraphDot >= maxGraphDot)
             {
                 timer1.Stop();
             }
@@ -156,7 +157,7 @@ namespace NDS
                 curGraphDot += speedGraphDot;
                 textBox1.Text = curGraphDot.ToString();
                 DrawGraphT_Anim(X_res, Y_res);
-            }                     
+            }
 
         }
 
@@ -225,7 +226,7 @@ namespace NDS
                     else
                         list.Add(PointPairBase.Missing, PointPairBase.Missing);
                 }
-            }            
+            }
             LineItem myCurve = paneT.AddCurve("Фазовая траектория", list, Color.Blue, SymbolType.None);
             paneT.XAxis.Scale.Min = -Math.PI;
             paneT.XAxis.Scale.Max = Math.PI;
@@ -252,7 +253,7 @@ namespace NDS
                         dotsX[k] = dotsX[k] % (-2 * Math.PI) + 2 * Math.PI;
                     }
 
-                    if (Math.Abs(dotsX[k - stepGraphDot] - dotsX[k]) <=  Math.PI - 1)
+                    if (Math.Abs(dotsX[k - stepGraphDot] - dotsX[k]) <= Math.PI - 1)
                         listT.Add(dotsX[k], dotsY[k]);
                     else
                         listT.Add(PointPairBase.Missing, PointPairBase.Missing);
@@ -278,7 +279,7 @@ namespace NDS
             {
                 if (k > stepGraphDot)
                 {
-                   
+
 
                     if (Math.Abs(dotsX[k - stepGraphDot] - dotsX[k]) <= Math.PI - 1)
                         listD.Add(k, dotsX[k]);
@@ -305,47 +306,46 @@ namespace NDS
             double[] initCond = { x_0, u_0, x1_0, u1_0 };
             curGraphDot = 0;
             startGraphDot = 0;
-            sysObj.SetParam(sysParam);
+            sysObj.setParam(sysParam);
 
-            sysObj.SolveDiffs(initCond, dt, T);
-            x_res = sysObj.GetRes(0);
-            u_res = sysObj.GetRes(1);
-            x1_res = sysObj.GetRes(2);
-            u1_res = sysObj.GetRes(3);
+            sysObj.solveDiffs(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
+            x_res = sysObj.de1.getResult(0).ToArray();
+            u_res = sysObj.de1.getResult(1).ToArray();
+            x1_res = sysObj.de2.getResult(0).ToArray();
+            u1_res = sysObj.de2.getResult(1).ToArray();
 
             get_sysPlotName();
-           
             DrawGraphD(X_res);
-           
+
         }
 
         // расчет фазовых траекторий
         private void button3_Click(object sender, EventArgs e)
         {
-            get_sysIntegr();
-            get_sysParam();
-            get_sysPlotParam();
-            double[] initCond = { x_0, u_0, x1_0, u1_0 };
-            curGraphDot = 0;
-            startGraphDot = 0;
-            sysObj.SetParam(sysParam);
+            //get_sysIntegr();
+            //get_sysParam();
+            //get_sysPlotParam();
+            //double[] initCond = { x_0, u_0, x1_0, u1_0 };
+            //curGraphDot = 0;
+            //startGraphDot = 0;
+            //sysObj.SetParam(sysParam);
 
-            sysObj.SolveDiffs(initCond, dt, T);
-            x_res = sysObj.GetRes(0);              
-            u_res = sysObj.GetRes(1);
-            x1_res = sysObj.GetRes(2);
-            u1_res = sysObj.GetRes(3);    
+            //sysObj.SolveDiffs(initCond, dt, T);
+            //x_res = sysObj.GetRes(0);              
+            //u_res = sysObj.GetRes(1);
+            //x1_res = sysObj.GetRes(2);
+            //u1_res = sysObj.GetRes(3);    
 
-            get_sysPlotName(); 
-            // без анимации
-            if (!checkBox1.Checked)
-            {
-                DrawGraphT(X_res, Y_res);
-            }
-            else
-            {
-                timer1.Start();
-            }
+            //get_sysPlotName(); 
+            //// без анимации
+            //if (!checkBox1.Checked)
+            //{
+            //    DrawGraphT(X_res, Y_res);
+            //}
+            //else
+            //{
+            //    timer1.Start();
+            //}
 
         }
 
@@ -356,13 +356,13 @@ namespace NDS
             {
                 timer1.Stop();
                 button4.Text = "Продолжить";
-            }                
+            }
             else
             {
                 timer1.Start();
                 button4.Text = "Стоп";
-            }                
+            }
         }
-      
+
     }
 }

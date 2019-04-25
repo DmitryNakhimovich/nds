@@ -24,6 +24,30 @@ namespace NDS
         public double E;
         public double phi;
         public double gamma;
+
+        public void init(
+            double _h,
+            double _h1,
+            double _lambda,
+            double _p,
+            double _mu0,
+            double _mu,
+            double _R,
+            double _E,
+            double _phi,
+            double _gamma)
+        {
+            h = _h;
+            h1 = _h1;
+            lambda = _lambda;
+            p = _p;
+            mu0 = _mu0;
+            mu = _mu0;
+            R = _R;
+            E = _E;
+            phi = _phi;
+            gamma = _gamma;
+        }
     }
 
     public abstract class IMethodFunction
@@ -96,8 +120,8 @@ namespace NDS
             result.Clear();
 
             time.Add(_t);
-            result.Add(_res);
-            method.setState(_t, _res, _dt, _eps);
+            result.Add(new List<double>(_res));
+            method.setState(_t, new List<double>(_res), _dt, _eps);
         }
         public void setState(int index, double _t, List<double> _res, double _dt, double _eps)
         {
@@ -105,8 +129,8 @@ namespace NDS
                 throw new Exception("index < 0");
 
             time[index] = _t;
-            result[index] = _res;
-            method.setState(_t, _res, _dt, _eps);
+            result[index] = new List<double>(_res);
+            method.setState(_t, new List<double>(_res), _dt, _eps);
         }
         public void setState(int index, double _t, List<double> _res)
         {
@@ -114,8 +138,8 @@ namespace NDS
                 throw new Exception("index < 0");
 
             time[index] = _t;
-            result[index] = _res;
-            method.setState(_t, _res);
+            result[index] = new List<double>(_res);
+            method.setState(_t, new List<double>(_res));
         }
         public void setParam(SystemParams _sysParam)
         {
@@ -127,7 +151,16 @@ namespace NDS
         {
             method.getNextStep();
             time.Add(method.t);
-            result.Add(method.result);
+            result.Add(new List<double>(method.result));
+        }
+        public List<double> getResult(int index)
+        {
+            List<double> res = new List<double>();
+            foreach (List<double> r in result)
+            {
+                res.Add(r[index]);
+            }
+            return res;
         }
 
         public double getF(double t)
@@ -193,48 +226,54 @@ namespace NDS
 
         public void solveDiffs(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps)
         {
-            int i = 0;
-            bool isActive = true;
-
             de1.setInit(0, initStateDE1, dt, eps);
             de2.setInit(0, initStateDE2, dt, eps);
+            int i = 0; // 0 - initState
+            bool isActive = true;
 
             while (isActive)
             {
+                de1.getNextStep();
+                de2.getNextStep();
+                i++;
+
                 if (de1.method.getdt() != de2.method.getdt())
                 {
-
+                    de1.result.RemoveAt(i);
+                    de2.result.RemoveAt(i);
+                    de1.time.RemoveAt(i);
+                    de2.time.RemoveAt(i);
+                    double _dt = de1.method.getdt() < de2.method.getdt()
+                        ? de1.method.getdt()
+                        : de2.method.getdt();
+                    de1.setState(i - 1, de1.time.Last(), de1.result.Last(), _dt, eps);
+                    de2.setState(i - 1, de2.time.Last(), de2.result.Last(), _dt, eps);
+                    i--;
+                    continue;
+                    throw new Exception("no code here");
                 }
 
-                de1.getNextStep();             
-                de2.getNextStep();
-               
                 List<double> de1Res = de1.result.Last();
                 List<double> de2Res = de2.result.Last();
                 double de1t = de1.time.Last();
                 double de2t = de2.time.Last();
 
                 if (
-                    (de1Work && de1Res[0] - de2Res[0] > de1.getF(de1t)) &&
-                    (de2Work && de1Res[0] - de2Res[0] > de2.getF(de2t))
+                    (de1Res[0] - de2Res[0] <= de1.getF(de1t)) &&
+                    (de1Res[0] - de2Res[0] <= de2.getF(de2t))
                    )
                 {
-                    res[0, j] = de1.Y[0];
-                    res[1, j] = de1.Y[1];
-                    res[2, j] = de2.Y[0];
-                    res[3, j] = de2.Y[1];
-                }
-                else
-                {
-                    res[0, j] = de1.Y[0];
-                    res[1, j] = de1.CalcHit(t, de1.Y[1], de2.Y[1]);
-                    res[2, j] = de1.Y[0] - de1.F(t); // de2.Y[0];
-                    res[3, j] = de2.CalcHit(t, de1.Y[1], de2.Y[1]);
-                    de1.SetInit(de1.t, new double[] { res[0, j], res[1, j], res[2, j], res[3, j] });
-                    de2.SetInit(de2.t, new double[] { res[0, j], res[1, j], res[2, j], res[3, j] });
+                    de1.result[i][1] = de1.getHit(de1t, de1Res[1], de2Res[1]);
+                    de2.result[i][0] = de1Res[0] - de1.getF(de1t);
+                    de2.result[i][1] = de2.getHit(de2t, de1Res[1], de2Res[1]);
+                    de1.method.setState(de1t, de1.result[i]);
+                    de2.method.setState(de2t, de2.result[i]);
                 }
 
-                i++;
+                if (de1t > T || de2t > T)
+                {
+                    isActive = false;
+                }
             }
         }
     }

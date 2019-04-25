@@ -41,11 +41,11 @@ namespace NDS
 
             dt = 0;
             eps = 0;
-            YY = new List<double>(n);
-            Y1 = new List<double>(n);
-            Y2 = new List<double>(n);
-            Y3 = new List<double>(n);
-            Y4 = new List<double>(n);
+            YY = new List<double>(new double[n]);
+            Y1 = new List<double>(new double[n]);
+            Y2 = new List<double>(new double[n]);
+            Y3 = new List<double>(new double[n]);
+            Y4 = new List<double>(new double[n]);
         }
 
         public void init(double _dt, double _eps, int n)
@@ -55,22 +55,22 @@ namespace NDS
 
             dt = _dt;
             eps = _eps;
-            YY = new List<double>(n);
-            Y1 = new List<double>(n);
-            Y2 = new List<double>(n);
-            Y3 = new List<double>(n);
-            Y4 = new List<double>(n);
+            YY = new List<double>(new double[n]);
+            Y1 = new List<double>(new double[n]);
+            Y2 = new List<double>(new double[n]);
+            Y3 = new List<double>(new double[n]);
+            Y4 = new List<double>(new double[n]);
         }
         public void clear(int n)
         {
             if (n < 0)
                 throw new Exception("array length < 0");
 
-            YY = new List<double>(n);
-            Y1 = new List<double>(n);
-            Y2 = new List<double>(n);
-            Y3 = new List<double>(n);
-            Y4 = new List<double>(n);
+            YY = new List<double>(new double[n]);
+            Y1 = new List<double>(new double[n]);
+            Y2 = new List<double>(new double[n]);
+            Y3 = new List<double>(new double[n]);
+            Y4 = new List<double>(new double[n]);
         }
     }
 
@@ -101,22 +101,10 @@ namespace NDS
             function = func;
         }
 
-        public void setState(double _t, List<double> _res)
-        {
-            t = _t;
-            result = _res;
-            state.clear(result.Count);
-        }
-        public void setState(double _t, List<double> _res, double _dt, double _eps)
-        {
-            t = _t;
-            result = _res;
-            state.init(_dt, _eps, result.Count);
-        }
-        public double getdt()
-        {
-            return state.dt;
-        }
+        public abstract void setState(double _t, List<double> _res);
+        public abstract void setState(double _t, List<double> _res, double _dt, double _eps);
+
+        public abstract double getdt();
 
         /// Вычислить следующий шаг
         /// <param name="dt">текущий шаг по времени</param>
@@ -134,6 +122,24 @@ namespace NDS
             state = new MethodStateRK4(n);
             result = new List<double>(n);
             t = 0;
+        }
+
+        public override void setState(double _t, List<double> _res)
+        {
+            t = _t;
+            result = _res;
+            state.clear(result.Count);
+        }
+        public override void setState(double _t, List<double> _res, double _dt, double _eps)
+        {
+            t = _t;
+            result = _res;
+            state.init(_dt, _eps, result.Count);
+        }
+
+        public override double getdt()
+        {
+            return state.dt;
         }
 
         public override void getNextStep()
