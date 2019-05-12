@@ -58,6 +58,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label22 = new System.Windows.Forms.Label();
+            this.numericUpDown19 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown17 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown16 = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
@@ -109,8 +111,6 @@
             this.button8 = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label22 = new System.Windows.Forms.Label();
-            this.numericUpDown19 = new System.Windows.Forms.NumericUpDown();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown18)).BeginInit();
@@ -124,6 +124,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown19)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown17)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown16)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).BeginInit();
@@ -143,7 +144,6 @@
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown19)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -668,6 +668,33 @@
             this.tabPage2.Text = "Интегрирование";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(23, 49);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(87, 13);
+            this.label22.TabIndex = 45;
+            this.label22.Text = "Погрешность = ";
+            // 
+            // numericUpDown19
+            // 
+            this.numericUpDown19.DecimalPlaces = 7;
+            this.numericUpDown19.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            327680});
+            this.numericUpDown19.Location = new System.Drawing.Point(113, 47);
+            this.numericUpDown19.Name = "numericUpDown19";
+            this.numericUpDown19.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown19.TabIndex = 44;
+            this.numericUpDown19.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            327680});
+            // 
             // numericUpDown17
             // 
             this.numericUpDown17.DecimalPlaces = 5;
@@ -690,6 +717,11 @@
             this.numericUpDown17.Name = "numericUpDown17";
             this.numericUpDown17.Size = new System.Drawing.Size(120, 20);
             this.numericUpDown17.TabIndex = 43;
+            this.numericUpDown17.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
             // 
             // numericUpDown16
             // 
@@ -792,7 +824,7 @@
             // 
             this.label29.AutoSize = true;
             this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label29.Location = new System.Drawing.Point(29, 454);
+            this.label29.Location = new System.Drawing.Point(39, 454);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(20, 15);
             this.label29.TabIndex = 36;
@@ -802,7 +834,7 @@
             // 
             this.label30.AutoSize = true;
             this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label30.Location = new System.Drawing.Point(29, 432);
+            this.label30.Location = new System.Drawing.Point(50, 422);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(147, 15);
             this.label30.TabIndex = 35;
@@ -837,9 +869,9 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(6, 523);
+            this.button2.Location = new System.Drawing.Point(6, 518);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(227, 45);
+            this.button2.Size = new System.Drawing.Size(227, 50);
             this.button2.TabIndex = 21;
             this.button2.Text = "Сохранить";
             this.button2.UseVisualStyleBackColor = true;
@@ -884,9 +916,14 @@
             // 
             // numericUpDown15
             // 
+            this.numericUpDown15.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.numericUpDown15.Location = new System.Drawing.Point(113, 149);
             this.numericUpDown15.Maximum = new decimal(new int[] {
-            1000000,
+            10000000,
             0,
             0,
             0});
@@ -1268,33 +1305,6 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(23, 49);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(87, 13);
-            this.label22.TabIndex = 45;
-            this.label22.Text = "Погрешность = ";
-            // 
-            // numericUpDown19
-            // 
-            this.numericUpDown19.DecimalPlaces = 7;
-            this.numericUpDown19.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            327680});
-            this.numericUpDown19.Location = new System.Drawing.Point(113, 47);
-            this.numericUpDown19.Name = "numericUpDown19";
-            this.numericUpDown19.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDown19.TabIndex = 44;
-            this.numericUpDown19.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            327680});
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1324,6 +1334,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown19)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown17)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown16)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).EndInit();
@@ -1346,7 +1357,6 @@
             this.groupBox6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown19)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

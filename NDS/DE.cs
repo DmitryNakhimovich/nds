@@ -239,6 +239,7 @@ namespace NDS
 
                 if (de1.method.getdt() != de2.method.getdt())
                 {
+                    throw new Exception("no code here");
                     de1.result.RemoveAt(i);
                     de2.result.RemoveAt(i);
                     de1.time.RemoveAt(i);
@@ -250,7 +251,6 @@ namespace NDS
                     de2.setState(i - 1, de2.time.Last(), de2.result.Last(), _dt, eps);
                     i--;
                     continue;
-                    throw new Exception("no code here");
                 }
 
                 List<double> de1Res = de1.result.Last();
@@ -259,7 +259,7 @@ namespace NDS
                 double de2t = de2.time.Last();
 
                 if (
-                    (de1Res[0] - de2Res[0] <= de1.getF(de1t)) &&
+                    (de1Res[0] - de2Res[0] <= de1.getF(de1t)) ||
                     (de1Res[0] - de2Res[0] <= de2.getF(de2t))
                    )
                 {
