@@ -310,19 +310,19 @@ namespace NDS
             PointPairList pointList_x1 = new PointPairList();
 
             int k = 0;
-            foreach (double r in x_res)
+            foreach (double r in graphData_X)
             {
                 pointList_x.Add(t_res[k], r);
                 k++;
             }
             k = 0;
-            foreach (double r in x1_res)
+            foreach (double r in graphData_Y)
             {
                 pointList_x1.Add(t_res[k], r);
                 k++;
             }
-            LineItem curve_x = graphPane_Oscilogramm.AddCurve("Центр масс корпуса", pointList_x, Color.Red, SymbolType.None);
-            LineItem curve_x1 = graphPane_Oscilogramm.AddCurve("Среда", pointList_x1, Color.Blue, SymbolType.None);
+            LineItem curve_x = graphPane_Oscilogramm.AddCurve(graphLabel_X, pointList_x, Color.Red, SymbolType.None);
+            LineItem curve_x1 = graphPane_Oscilogramm.AddCurve(graphLabel_Y, pointList_x1, Color.Blue, SymbolType.None);
 
             graphPane_Oscilogramm.XAxis.Title.Text = "Время";
             graphPane_Oscilogramm.YAxis.Title.Text = "Координаты";
