@@ -245,7 +245,7 @@
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label26.Location = new System.Drawing.Point(28, 442);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(37, 15);
+            this.label26.Size = new System.Drawing.Size(33, 15);
             this.label26.TabIndex = 26;
             this.label26.Text = "← →";
             // 
@@ -852,6 +852,7 @@
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(94, 21);
             this.comboBox3.TabIndex = 34;
+            this.comboBox3.Text = "x";
             // 
             // comboBox4
             // 
@@ -865,6 +866,7 @@
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(94, 21);
             this.comboBox4.TabIndex = 33;
+            this.comboBox4.Text = "u";
             // 
             // button2
             // 

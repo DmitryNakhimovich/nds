@@ -228,10 +228,12 @@ namespace NDS
             //zedGraphControl1.AxisChange();
             //zedGraphControl1.Invalidate();
         }
-        private void drawGraph_Phase(double[] dotsX, double[] dotsY)
+        private void drawGraph_Phase()
         {
-            //paneT.CurveList.Clear();
-            //PointPairList listT = new PointPairList();
+            getSysPlotData();
+
+            graphPane_Phase.CurveList.Clear();
+            PointPairList pointList = new PointPairList();
 
             //for (int k = maxGraphDot - capGraphDot; k < maxGraphDot; k += stepGraphDot)
             //{
@@ -253,33 +255,40 @@ namespace NDS
 
             //    }
             //}
-            //LineItem myCurve = paneT.AddCurve("Фазовая траектория", listT, Color.Red, SymbolType.None);
-            //paneT.XAxis.Scale.Min = -Math.PI;
-            //paneT.XAxis.Scale.Max = Math.PI;
-            //paneT.YAxis.Scale.MaxAuto = true;
-            //paneT.YAxis.Scale.MinAuto = true;
-            //zedGraphControl1.AxisChange();
-            //zedGraphControl1.Invalidate();
+
+            int k = 0;
+            foreach (double t in t_res)
+            {
+                pointList.Add(graphData_X[k], graphData_Y[k]);
+                k++;
+            }
+            LineItem curve = graphPane_Phase.AddCurve("Фазовая траектория", pointList, Color.Red, SymbolType.None);
+
+            graphPane_Phase.XAxis.Title.Text = graphLabel_X;
+            graphPane_Phase.YAxis.Title.Text = graphLabel_Y;
+            graphPane_Phase.Title.Text = "Фазовые траектории";
+            zedGraphControl1.AxisChange();
+            zedGraphControl1.Invalidate();
         }
         // старт фазовых траекторий
         private void button3_Click(object sender, EventArgs e)
         {
-            //get_sysIntegr();
-            //get_sysParam();
-            //get_sysPlotParam();
-            //double[] initCond = { x_0, u_0, x1_0, u1_0 };
-            //curGraphDot = 0;
-            //startGraphDot = 0;
-            //sysObj.SetParam(sysParam);
+            getSysIntegrationData();
+            getSysParamData();
+            curGraphDot = 0;
+            startGraphDot = 0;
 
-            //sysObj.SolveDiffs(initCond, dt, T);
-            //x_res = sysObj.GetRes(0);              
-            //u_res = sysObj.GetRes(1);
-            //x1_res = sysObj.GetRes(2);
-            //u1_res = sysObj.GetRes(3);    
+            sysDE.setParam(sysParam);
+            sysDE.solveDiffs(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
+            t_res = sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time : sysDE.de2.time;
+            x_res = sysDE.de1.getResult(0);
+            u_res = sysDE.de1.getResult(1);
+            x1_res = sysDE.de2.getResult(0);
+            u1_res = sysDE.de2.getResult(1);
 
-            //get_sysPlotName(); 
-            //// без анимации
+            drawGraph_Phase();
+
+            // анимация
             //if (!checkBox1.Checked)
             //{
             //    DrawGraphT(X_res, Y_res);
