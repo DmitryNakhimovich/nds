@@ -55,6 +55,7 @@ namespace NDS
             sysDE = new SystemDE(sysParam, 2);
             graphPane_Oscilogramm = zedGraphControl2.GraphPane;
             graphPane_Phase = zedGraphControl1.GraphPane;
+            graphPane_Bifurcation = zedGraphControl3.GraphPane;
         }
 
         // Инициализировать параметры системы из формы
@@ -195,6 +196,55 @@ namespace NDS
             //}
         }
 
+        // график осцилограммы
+        private void drawGraph_Oscilogramm()
+        {
+            getSysPlotData();
+
+            graphPane_Oscilogramm.CurveList.Clear();
+            PointPairList pointList_x = new PointPairList();
+            PointPairList pointList_x1 = new PointPairList();
+
+            int k = 0;
+            foreach (double r in graphData_X)
+            {
+                pointList_x.Add(t_res[k], r);
+                k++;
+            }
+            k = 0;
+            foreach (double r in graphData_Y)
+            {
+                pointList_x1.Add(t_res[k], r);
+                k++;
+            }
+            LineItem curve_x = graphPane_Oscilogramm.AddCurve(graphLabel_X, pointList_x, Color.Red, SymbolType.None);
+            LineItem curve_x1 = graphPane_Oscilogramm.AddCurve(graphLabel_Y, pointList_x1, Color.Blue, SymbolType.None);
+
+            graphPane_Oscilogramm.XAxis.Title.Text = "Время";
+            graphPane_Oscilogramm.YAxis.Title.Text = "Координаты";
+            graphPane_Oscilogramm.Title.Text = "Осцилограммы движения";
+            zedGraphControl2.AxisChange();
+            zedGraphControl2.Invalidate();
+        }
+        // старт осцилограммы движения
+        private void button6_Click(object sender, EventArgs e)
+        {
+            getSysIntegrationData();
+            getSysParamData();
+            curGraphDot = 0;
+            startGraphDot = 0;
+
+            sysDE.setParam(sysParam);
+            sysDE.solveDiffs(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
+            t_res = sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time : sysDE.de2.time;
+            x_res = sysDE.de1.getResult(0);
+            u_res = sysDE.de1.getResult(1);
+            x1_res = sysDE.de2.getResult(0);
+            u1_res = sysDE.de2.getResult(1);
+
+            drawGraph_Oscilogramm();
+        }
+
         // график фазовых траекторий 
         private void drawGraph_Phase_Anim(double[] dotsX, double[] dotsY)
         {
@@ -300,53 +350,63 @@ namespace NDS
 
         }
 
-        // график осцилограммы
-        private void drawGraph_Oscilogramm()
+        // график бифуркационных диаграмм
+        private void drawGraph_Bifurcation()
         {
             getSysPlotData();
 
-            graphPane_Oscilogramm.CurveList.Clear();
-            PointPairList pointList_x = new PointPairList();
-            PointPairList pointList_x1 = new PointPairList();
+            graphPane_Bifurcation.CurveList.Clear();
+            PointPairList pointList = new PointPairList();
 
             int k = 0;
-            foreach (double r in graphData_X)
+            foreach (double p in graphData_X)
             {
-                pointList_x.Add(t_res[k], r);
+                pointList.Add(p, graphData_Y[k]);
                 k++;
             }
-            k = 0;
-            foreach (double r in graphData_Y)
-            {
-                pointList_x1.Add(t_res[k], r);
-                k++;
-            }
-            LineItem curve_x = graphPane_Oscilogramm.AddCurve(graphLabel_X, pointList_x, Color.Red, SymbolType.None);
-            LineItem curve_x1 = graphPane_Oscilogramm.AddCurve(graphLabel_Y, pointList_x1, Color.Blue, SymbolType.None);
+            LineItem curve = graphPane_Phase.AddCurve("Бифуркационная диаграмма", pointList, Color.Red, SymbolType.Circle);
+            curve.Line.IsVisible = false;
+            curve.Symbol.Fill.Color = Color.Blue;
+            curve.Symbol.Fill.Type = FillType.Solid;
+            curve.Symbol.Size = 3;
 
-            graphPane_Oscilogramm.XAxis.Title.Text = "Время";
-            graphPane_Oscilogramm.YAxis.Title.Text = "Координаты";
-            graphPane_Oscilogramm.Title.Text = "Осцилограммы движения";
-            zedGraphControl2.AxisChange();
-            zedGraphControl2.Invalidate();
+            graphPane_Phase.XAxis.Title.Text = graphLabel_X;
+            graphPane_Phase.YAxis.Title.Text = graphLabel_Y;
+            graphPane_Phase.Title.Text = "Бифуркационные диаграммы";
+            zedGraphControl1.AxisChange();
+            zedGraphControl1.Invalidate();
         }
-        // старт осцилограммы движения
-        private void button6_Click(object sender, EventArgs e)
+        // старт бифуркационных диаграмм
+        private void button8_Click(object sender, EventArgs e)
         {
             getSysIntegrationData();
             getSysParamData();
             curGraphDot = 0;
             startGraphDot = 0;
 
-            sysDE.setParam(sysParam);
-            sysDE.solveDiffs(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
-            t_res = sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time : sysDE.de2.time;
-            x_res = sysDE.de1.getResult(0);
-            u_res = sysDE.de1.getResult(1);
-            x1_res = sysDE.de2.getResult(0);
-            u1_res = sysDE.de2.getResult(1);
+            string bifParamName = comboBox5.Text.ToString();
+            double p_start = Convert.ToDouble(numericUpDown20.Text);
+            double p_end = Convert.ToDouble(numericUpDown21.Text);
+            double p_delta = Convert.ToDouble(numericUpDown22.Text);
+            t_res.Clear();
+            x_res.Clear();
+            u_res.Clear();
+            x1_res.Clear();
+            u1_res.Clear();
 
-            drawGraph_Oscilogramm();
+            for (double p = p_start; p < p_end; p = p + p_delta)
+            {
+                sysParam.setParam(bifParamName, p);
+                sysDE.setParam(sysParam);
+                sysDE.solveBifurcation(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
+                t_res.Concat(sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time : sysDE.de2.time);
+                x_res.Concat(sysDE.de1.getResult(0));
+                u_res.Concat(sysDE.de1.getResult(1));
+                x1_res.Concat(sysDE.de2.getResult(0));
+                u1_res.Concat(sysDE.de2.getResult(1));
+            }
+
+            drawGraph_Bifurcation();
         }
 
     }

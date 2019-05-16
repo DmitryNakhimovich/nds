@@ -103,14 +103,18 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.comboBox5 = new System.Windows.Forms.ComboBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.zedGraphControl3 = new ZedGraph.ZedGraphControl();
+            this.numericUpDown20 = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.numericUpDown21 = new System.Windows.Forms.NumericUpDown();
+            this.label32 = new System.Windows.Forms.Label();
+            this.numericUpDown22 = new System.Windows.Forms.NumericUpDown();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown18)).BeginInit();
@@ -142,8 +146,10 @@
             this.groupBox3.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown20)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown21)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown22)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -350,11 +356,11 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(70, 263);
+            this.label10.Location = new System.Drawing.Point(74, 263);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(37, 13);
+            this.label10.Size = new System.Drawing.Size(26, 13);
             this.label10.TabIndex = 15;
-            this.label10.Text = "Eps = ";
+            this.label10.Text = "E = ";
             // 
             // numericUpDown9
             // 
@@ -1214,22 +1220,28 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.zedGraphControl3);
             this.tabPage5.Controls.Add(this.groupBox6);
-            this.tabPage5.Controls.Add(this.dataGridView1);
             this.tabPage5.Controls.Add(this.groupBox2);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Size = new System.Drawing.Size(979, 677);
             this.tabPage5.TabIndex = 0;
-            this.tabPage5.Text = "Координаты неподвижных точек";
+            this.tabPage5.Text = "Бифуркационные диаграммы";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.label32);
+            this.groupBox6.Controls.Add(this.numericUpDown22);
+            this.groupBox6.Controls.Add(this.label31);
+            this.groupBox6.Controls.Add(this.numericUpDown21);
+            this.groupBox6.Controls.Add(this.label23);
+            this.groupBox6.Controls.Add(this.numericUpDown20);
             this.groupBox6.Controls.Add(this.comboBox5);
-            this.groupBox6.Location = new System.Drawing.Point(845, 157);
+            this.groupBox6.Location = new System.Drawing.Point(852, 15);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(122, 44);
+            this.groupBox6.Size = new System.Drawing.Size(122, 190);
             this.groupBox6.TabIndex = 36;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Параметр";
@@ -1237,38 +1249,28 @@
             // comboBox5
             // 
             this.comboBox5.FormattingEnabled = true;
+            this.comboBox5.Items.AddRange(new object[] {
+            "h",
+            "h1",
+            "lambda",
+            "p",
+            "mu0",
+            "mu",
+            "R",
+            "Eps",
+            "phi",
+            "gamma"});
             this.comboBox5.Location = new System.Drawing.Point(6, 18);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(110, 21);
             this.comboBox5.TabIndex = 35;
             this.comboBox5.Text = "p";
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2});
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(822, 674);
-            this.dataGridView1.TabIndex = 34;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "t0";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "t1";
-            this.Column2.Name = "Column2";
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button7);
             this.groupBox2.Controls.Add(this.button8);
-            this.groupBox2.Location = new System.Drawing.Point(845, 211);
+            this.groupBox2.Location = new System.Drawing.Point(852, 211);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(122, 100);
             this.groupBox2.TabIndex = 33;
@@ -1286,12 +1288,13 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(7, 19);
+            this.button8.Location = new System.Drawing.Point(7, 14);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(109, 33);
             this.button8.TabIndex = 0;
             this.button8.Text = "Старт";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // label13
             // 
@@ -1306,6 +1309,127 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // zedGraphControl3
+            // 
+            this.zedGraphControl3.Location = new System.Drawing.Point(0, 0);
+            this.zedGraphControl3.Name = "zedGraphControl3";
+            this.zedGraphControl3.ScrollGrace = 0D;
+            this.zedGraphControl3.ScrollMaxX = 3.1416D;
+            this.zedGraphControl3.ScrollMaxY = 0D;
+            this.zedGraphControl3.ScrollMaxY2 = 0D;
+            this.zedGraphControl3.ScrollMinX = -3.1416D;
+            this.zedGraphControl3.ScrollMinY = 0D;
+            this.zedGraphControl3.ScrollMinY2 = 0D;
+            this.zedGraphControl3.Size = new System.Drawing.Size(846, 677);
+            this.zedGraphControl3.TabIndex = 37;
+            this.zedGraphControl3.UseExtendedPrintDialog = true;
+            // 
+            // numericUpDown20
+            // 
+            this.numericUpDown20.DecimalPlaces = 4;
+            this.numericUpDown20.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numericUpDown20.Location = new System.Drawing.Point(6, 65);
+            this.numericUpDown20.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDown20.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown20.Name = "numericUpDown20";
+            this.numericUpDown20.Size = new System.Drawing.Size(110, 20);
+            this.numericUpDown20.TabIndex = 36;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(6, 49);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(112, 13);
+            this.label23.TabIndex = 37;
+            this.label23.Text = "Начальное значение";
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(6, 91);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(105, 13);
+            this.label31.TabIndex = 39;
+            this.label31.Text = "Конечное значение";
+            // 
+            // numericUpDown21
+            // 
+            this.numericUpDown21.DecimalPlaces = 4;
+            this.numericUpDown21.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numericUpDown21.Location = new System.Drawing.Point(6, 107);
+            this.numericUpDown21.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDown21.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown21.Name = "numericUpDown21";
+            this.numericUpDown21.Size = new System.Drawing.Size(110, 20);
+            this.numericUpDown21.TabIndex = 38;
+            this.numericUpDown21.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(6, 138);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(27, 13);
+            this.label32.TabIndex = 41;
+            this.label32.Text = "Шаг";
+            // 
+            // numericUpDown22
+            // 
+            this.numericUpDown22.DecimalPlaces = 4;
+            this.numericUpDown22.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numericUpDown22.Location = new System.Drawing.Point(6, 154);
+            this.numericUpDown22.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDown22.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown22.Name = "numericUpDown22";
+            this.numericUpDown22.Size = new System.Drawing.Size(110, 20);
+            this.numericUpDown22.TabIndex = 40;
+            this.numericUpDown22.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
             // 
             // Form1
             // 
@@ -1357,8 +1481,11 @@
             this.groupBox3.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.groupBox6.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown20)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown21)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown22)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1436,18 +1563,22 @@
         private System.Windows.Forms.NumericUpDown numericUpDown17;
         private System.Windows.Forms.NumericUpDown numericUpDown16;
         private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.ComboBox comboBox5;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.NumericUpDown numericUpDown18;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.NumericUpDown numericUpDown19;
+        private ZedGraph.ZedGraphControl zedGraphControl3;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.NumericUpDown numericUpDown22;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.NumericUpDown numericUpDown21;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.NumericUpDown numericUpDown20;
     }
 }
 

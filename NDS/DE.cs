@@ -25,6 +25,30 @@ namespace NDS
         public double phi;
         public double gamma;
 
+        public SystemParams(
+            double _h,
+            double _h1,
+            double _lambda,
+            double _p,
+            double _mu0,
+            double _mu,
+            double _R,
+            double _E,
+            double _phi,
+            double _gamma)
+        {
+            h = _h;
+            h1 = _h1;
+            lambda = _lambda;
+            p = _p;
+            mu0 = _mu0;
+            mu = _mu0;
+            R = _R;
+            E = _E;
+            phi = _phi;
+            gamma = _gamma;
+        }
+
         public void init(
             double _h,
             double _h1,
@@ -47,6 +71,45 @@ namespace NDS
             E = _E;
             phi = _phi;
             gamma = _gamma;
+        }
+
+        public void setParam(string paramName, double paramVal)
+        {
+            switch (paramName)
+            {
+                case "h":
+                    h = paramVal;
+                    break;
+                case "h1":
+                    h1 = paramVal;
+                    break;
+                case "lambda":
+                    lambda = paramVal;
+                    break;
+                case "p":
+                    p = paramVal;
+                    break;
+                case "mu0":
+                    mu0 = paramVal;
+                    break;
+                case "mu":
+                    mu = paramVal;
+                    break;
+                case "R":
+                    R = paramVal;
+                    break;
+                case "E":
+                    E = paramVal;
+                    break;
+                case "phi":
+                    phi = paramVal;
+                    break;
+                case "gamma":
+                    gamma = paramVal;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -225,6 +288,59 @@ namespace NDS
         }
 
         public void solveDiffs(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps)
+        {
+            de1.setInit(0, initStateDE1, dt, eps);
+            de2.setInit(0, initStateDE2, dt, eps);
+            int i = 0; // 0 - initState
+            bool isActive = true;
+
+            while (isActive)
+            {
+                de1.getNextStep();
+                de2.getNextStep();
+                i++;
+
+                if (de1.method.getdt() != de2.method.getdt())
+                {
+                    throw new Exception("no code here");
+                    de1.result.RemoveAt(i);
+                    de2.result.RemoveAt(i);
+                    de1.time.RemoveAt(i);
+                    de2.time.RemoveAt(i);
+                    double _dt = de1.method.getdt() < de2.method.getdt()
+                        ? de1.method.getdt()
+                        : de2.method.getdt();
+                    de1.setState(i - 1, de1.time.Last(), de1.result.Last(), _dt, eps);
+                    de2.setState(i - 1, de2.time.Last(), de2.result.Last(), _dt, eps);
+                    i--;
+                    continue;
+                }
+
+                List<double> de1Res = de1.result.Last();
+                List<double> de2Res = de2.result.Last();
+                double de1t = de1.time.Last();
+                double de2t = de2.time.Last();
+
+                if (
+                    (de1Res[0] - de2Res[0] <= de1.getF(de1t)) ||
+                    (de1Res[0] - de2Res[0] <= de2.getF(de2t))
+                   )
+                {
+                    de1.result[i][1] = de1.getHit(de1t, de1Res[1], de2Res[1]);
+                    de2.result[i][0] = de1Res[0] - de1.getF(de1t);
+                    de2.result[i][1] = de2.getHit(de2t, de1Res[1], de2Res[1]);
+                    de1.method.setState(de1t, de1.result[i]);
+                    de2.method.setState(de2t, de2.result[i]);
+                }
+
+                if (de1t > T || de2t > T)
+                {
+                    isActive = false;
+                }
+            }
+        }
+
+        public void solveBifurcation(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps)
         {
             de1.setInit(0, initStateDE1, dt, eps);
             de2.setInit(0, initStateDE2, dt, eps);
