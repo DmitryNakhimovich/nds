@@ -359,22 +359,22 @@ namespace NDS
             PointPairList pointList = new PointPairList();
 
             int k = 0;
-            foreach (double p in graphData_X)
+            foreach (double p in t_res)
             {
                 pointList.Add(p, graphData_Y[k]);
                 k++;
             }
-            LineItem curve = graphPane_Phase.AddCurve("Бифуркационная диаграмма", pointList, Color.Red, SymbolType.Circle);
+            LineItem curve = graphPane_Bifurcation.AddCurve("Бифуркационная диаграмма", pointList, Color.Red, SymbolType.Circle);
             curve.Line.IsVisible = false;
             curve.Symbol.Fill.Color = Color.Blue;
             curve.Symbol.Fill.Type = FillType.Solid;
             curve.Symbol.Size = 3;
 
-            graphPane_Phase.XAxis.Title.Text = graphLabel_X;
-            graphPane_Phase.YAxis.Title.Text = graphLabel_Y;
-            graphPane_Phase.Title.Text = "Бифуркационные диаграммы";
-            zedGraphControl1.AxisChange();
-            zedGraphControl1.Invalidate();
+            graphPane_Bifurcation.XAxis.Title.Text = graphLabel_X;
+            graphPane_Bifurcation.YAxis.Title.Text = graphLabel_Y;
+            graphPane_Bifurcation.Title.Text = "Бифуркационные диаграммы";
+            zedGraphControl3.AxisChange();
+            zedGraphControl3.Invalidate();
         }
         // старт бифуркационных диаграмм
         private void button8_Click(object sender, EventArgs e)
@@ -388,22 +388,27 @@ namespace NDS
             double p_start = Convert.ToDouble(numericUpDown20.Text);
             double p_end = Convert.ToDouble(numericUpDown21.Text);
             double p_delta = Convert.ToDouble(numericUpDown22.Text);
-            t_res.Clear();
-            x_res.Clear();
-            u_res.Clear();
-            x1_res.Clear();
-            u1_res.Clear();
+            int hitsCount = Convert.ToInt32(numericUpDown23.Text);
+            t_res = new List<double>();
+            x_res = new List<double>();
+            u_res = new List<double>();
+            x1_res = new List<double>();
+            u1_res = new List<double>();
 
             for (double p = p_start; p < p_end; p = p + p_delta)
             {
                 sysParam.setParam(bifParamName, p);
                 sysDE.setParam(sysParam);
-                sysDE.solveBifurcation(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps);
-                t_res.Concat(sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time : sysDE.de2.time);
-                x_res.Concat(sysDE.de1.getResult(0));
-                u_res.Concat(sysDE.de1.getResult(1));
-                x1_res.Concat(sysDE.de2.getResult(0));
-                u1_res.Concat(sysDE.de2.getResult(1));
+                sysDE.solveBifurcation(new List<double> { x_0, u_0 }, new List<double> { x1_0, u1_0 }, dt, T, eps, hitsCount);
+
+                int ptc = sysDE.de1.time.Count > sysDE.de2.time.Count ? sysDE.de1.time.Count : sysDE.de2.time.Count;
+                List<double> ptmp = new List<double>(ptc);
+                for (int i = 0; i < ptc; i++) ptmp.Add(p);
+                t_res.AddRange(ptmp);
+                x_res.AddRange(sysDE.de1.getResult(0));
+                u_res.AddRange(sysDE.de1.getResult(1));
+                x1_res.AddRange(sysDE.de2.getResult(0));
+                u1_res.AddRange(sysDE.de2.getResult(1));
             }
 
             drawGraph_Bifurcation();

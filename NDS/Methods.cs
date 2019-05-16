@@ -127,13 +127,13 @@ namespace NDS
         public override void setState(double _t, List<double> _res)
         {
             t = _t;
-            result = _res;
+            result = new List<double>(_res);
             state.clear(result.Count);
         }
         public override void setState(double _t, List<double> _res, double _dt, double _eps)
         {
             t = _t;
-            result = _res;
+            result = new List<double>(_res);
             state.init(_dt, _eps, result.Count);
         }
 

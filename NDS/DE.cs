@@ -340,17 +340,18 @@ namespace NDS
             }
         }
 
-        public void solveBifurcation(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps)
+        public void solveBifurcation(List<double> initStateDE1, List<double> initStateDE2, double dt, double T, double eps, int hitsCount)
         {
             de1.setInit(0, initStateDE1, dt, eps);
             de2.setInit(0, initStateDE2, dt, eps);
             int i = 0; // 0 - initState
             bool isActive = true;
+            int hits = 0;
 
             while (isActive)
             {
-                de1.getNextStep();
-                de2.getNextStep();
+                de1.method.getNextStep(); ;
+                de2.method.getNextStep(); ;
                 i++;
 
                 if (de1.method.getdt() != de2.method.getdt())
@@ -369,8 +370,12 @@ namespace NDS
                     continue;
                 }
 
+                // time.Add(method.t);
+                // result.Add(new List<double>(method.result));
                 List<double> de1Res = de1.result.Last();
                 List<double> de2Res = de2.result.Last();
+                de1.result.RemoveAt(de1.result.Count - 1);
+                de2.result.RemoveAt(de2.result.Count - 1);
                 double de1t = de1.time.Last();
                 double de2t = de2.time.Last();
 
@@ -379,14 +384,24 @@ namespace NDS
                     (de1Res[0] - de2Res[0] <= de2.getF(de2t))
                    )
                 {
-                    de1.result[i][1] = de1.getHit(de1t, de1Res[1], de2Res[1]);
-                    de2.result[i][0] = de1Res[0] - de1.getF(de1t);
-                    de2.result[i][1] = de2.getHit(de2t, de1Res[1], de2Res[1]);
-                    de1.method.setState(de1t, de1.result[i]);
-                    de2.method.setState(de2t, de2.result[i]);
+                    List<double> de1tmpRes = new List<double>();
+                    List<double> de2tmpRes = new List<double>();
+                    de1tmpRes.Add(de1Res[0]);
+                    de1tmpRes.Add(de1.getHit(de1t, de1Res[1], de2Res[1]));
+                    de2tmpRes.Add(de1Res[0] - de1.getF(de1t));
+                    de2tmpRes.Add(de2.getHit(de2t, de1Res[1], de2Res[1]));
+                    de1.method.setState(de1t, de1tmpRes);
+                    de2.method.setState(de2t, de2tmpRes);
+
+                    hits++;
+                    if (hits > 500)
+                    {
+                        de1.result.Add(de1tmpRes);
+                        de2.result.Add(de2tmpRes);
+                    }
                 }
 
-                if (de1t > T || de2t > T)
+                if (hits >= hitsCount)
                 {
                     isActive = false;
                 }
