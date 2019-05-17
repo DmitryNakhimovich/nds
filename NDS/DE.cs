@@ -344,14 +344,19 @@ namespace NDS
         {
             de1.setInit(0, initStateDE1, dt, eps);
             de2.setInit(0, initStateDE2, dt, eps);
+            de1.result.Clear();
+            de1.time.Clear();
+            de2.result.Clear();
+            de2.time.Clear();
             int i = 0; // 0 - initState
             bool isActive = true;
-            int hits = 0;
+            int hitsEnter = 0;
+            int hitsDone = 0;
 
             while (isActive)
             {
-                de1.method.getNextStep(); ;
-                de2.method.getNextStep(); ;
+                de1.method.getNextStep();
+                de2.method.getNextStep();
                 i++;
 
                 if (de1.method.getdt() != de2.method.getdt())
@@ -370,14 +375,10 @@ namespace NDS
                     continue;
                 }
 
-                // time.Add(method.t);
-                // result.Add(new List<double>(method.result));
-                List<double> de1Res = de1.result.Last();
-                List<double> de2Res = de2.result.Last();
-                de1.result.RemoveAt(de1.result.Count - 1);
-                de2.result.RemoveAt(de2.result.Count - 1);
-                double de1t = de1.time.Last();
-                double de2t = de2.time.Last();
+                List<double> de1Res = new List<double>(de1.method.result);
+                List<double> de2Res = new List<double>(de2.method.result);
+                double de1t = de1.method.t;
+                double de2t = de2.method.t;
 
                 if (
                     (de1Res[0] - de2Res[0] <= de1.getF(de1t)) ||
@@ -393,15 +394,18 @@ namespace NDS
                     de1.method.setState(de1t, de1tmpRes);
                     de2.method.setState(de2t, de2tmpRes);
 
-                    hits++;
-                    if (hits > 500)
+                    hitsEnter++;
+                    if (hitsEnter > hitsCount)
                     {
                         de1.result.Add(de1tmpRes);
                         de2.result.Add(de2tmpRes);
+                        de1.time.Add(de1t);
+                        de2.time.Add(de2t);
+                        hitsDone++;
                     }
                 }
 
-                if (hits >= hitsCount)
+                if (hitsDone >= hitsCount)
                 {
                     isActive = false;
                 }
