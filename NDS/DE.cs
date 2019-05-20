@@ -395,7 +395,7 @@ namespace NDS
                     de2.method.setState(de2t, de2tmpRes);
 
                     hitsEnter++;
-                    if (hitsEnter > hitsCount)
+                    if (hitsEnter > 100)
                     {
                         de1.result.Add(de1tmpRes);
                         de2.result.Add(de2tmpRes);
