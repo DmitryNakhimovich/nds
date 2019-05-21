@@ -395,14 +395,14 @@ namespace NDS
                     de2.method.setState(de2t, de2tmpRes);
 
                     hitsEnter++;
-                    if (hitsEnter > 100)
-                    {
-                        de1.result.Add(de1tmpRes);
-                        de2.result.Add(de2tmpRes);
-                        de1.time.Add(de1t);
-                        de2.time.Add(de2t);
-                        hitsDone++;
-                    }
+                    //if (hitsEnter > 500)
+                    //{
+                    de1.result.Add(de1tmpRes);
+                    de2.result.Add(de2tmpRes);
+                    de1.time.Add(de1t);
+                    de2.time.Add(de2t);
+                    hitsDone++;
+                    //}
                 }
 
                 if (hitsDone >= hitsCount)
