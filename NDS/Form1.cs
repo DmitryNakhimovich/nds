@@ -364,11 +364,11 @@ namespace NDS
                 pointList.Add(p, graphData_Y[k]);
                 k++;
             }
-            LineItem curve = graphPane_Bifurcation.AddCurve("Бифуркационная диаграмма", pointList, Color.Red, SymbolType.Circle);
+            LineItem curve = graphPane_Bifurcation.AddCurve("Бифуркационная диаграмма", pointList, Color.Black, SymbolType.Square);
             curve.Line.IsVisible = false;
-            curve.Symbol.Fill.Color = Color.Blue;
+            curve.Symbol.Fill.Color = Color.Black;
             curve.Symbol.Fill.Type = FillType.Solid;
-            curve.Symbol.Size = 3;
+            curve.Symbol.Size = 2;
 
             graphPane_Bifurcation.XAxis.Title.Text = graphLabel_X;
             graphPane_Bifurcation.YAxis.Title.Text = graphLabel_Y;
